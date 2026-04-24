@@ -293,6 +293,7 @@ if TYPE_CHECKING:
     from .olmo3 import *
     from .olmo_hybrid import *
     from .olmoe import *
+    from .olmpool import *
     from .omdet_turbo import *
     from .oneformer import *
     from .openai import *
