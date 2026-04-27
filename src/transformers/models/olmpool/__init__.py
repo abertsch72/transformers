@@ -25,3 +25,17 @@ else:
 
     _file = globals()["__file__"]
     sys.modules[__name__] = _LazyModule(__name__, _file, define_import_structure(_file), module_spec=__spec__)
+
+    # Register aliases so HF auto-mapping can resolve model_type names to this module.
+    # HF convention maps model_type "foo_bar" -> transformers.models.foo_bar, but these
+    # model types all live in the single olmpool module.
+    _lazy_mod = sys.modules[__name__]
+    for _alias in [
+        "transformers.models.olmo3_preorder",
+        "transformers.models.olmo3_preorder_headwise_qknorm",
+        "transformers.models.olmo2_headwise_qknorm",
+        "transformers.models.llama3_qknorm",
+        "transformers.models.llama3_reordered",
+    ]:
+        sys.modules.setdefault(_alias, _lazy_mod)
+    del _lazy_mod, _alias
