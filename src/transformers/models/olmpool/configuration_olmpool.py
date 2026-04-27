@@ -70,4 +70,48 @@ class Llama3ReorderedConfig(Olmo2Config):
     model_type = "llama3_reordered"
 
 
-__all__ = ["Llama3QKNormConfig", "Llama3ReorderedConfig", "Olmo3PreorderConfig"]
+class Olmo2HeadwiseQKNormConfig(Olmo2Config):
+    r"""
+    Config for models using a reordered-norm (OLMo2-style post-norm) block with
+    *headwise* QK norms — norms applied per attention head (size ``head_dim``)
+    rather than across the full projection (size ``n_heads * head_dim``).
+
+    Weight key layout:
+      model.layers.N.post_attention_layernorm.weight
+      model.layers.N.post_feedforward_layernorm.weight
+      model.layers.N.self_attn.q_norm.weight  (shape: head_dim)
+      model.layers.N.self_attn.k_norm.weight  (shape: head_dim)
+
+    Corresponds to olmo-core architectures with ``use_head_qk_norm=True`` and a
+    reordered-norm block (e.g. ``olmo2_7B`` with ``use_head_qk_norm=True``).
+    """
+
+    model_type = "olmo2_headwise_qknorm"
+
+
+class Olmo3PreorderHeadwiseQKNormConfig(Olmo3PreorderConfig):
+    r"""
+    Config for models using a pre-norm (Llama-style) block with *headwise* QK
+    norms — norms applied per attention head (size ``head_dim``) rather than
+    across the full projection.
+
+    Weight key layout:
+      model.layers.N.input_layernorm.weight
+      model.layers.N.post_attention_layernorm.weight
+      model.layers.N.self_attn.q_norm.weight  (shape: head_dim)
+      model.layers.N.self_attn.k_norm.weight  (shape: head_dim)
+
+    Corresponds to olmo-core architectures with ``use_head_qk_norm=True`` and a
+    default (pre-norm) block (e.g. ``qwen3_8B`` style).
+    """
+
+    model_type = "olmo3_preorder_headwise_qknorm"
+
+
+__all__ = [
+    "Llama3QKNormConfig",
+    "Llama3ReorderedConfig",
+    "Olmo2HeadwiseQKNormConfig",
+    "Olmo3PreorderConfig",
+    "Olmo3PreorderHeadwiseQKNormConfig",
+]
